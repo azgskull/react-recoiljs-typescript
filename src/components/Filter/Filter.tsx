@@ -8,12 +8,10 @@ export default function Filter() {
   const [filterStateValue, setFilterState] = useRecoilState(filterState);
   const todoListStateValue = useRecoilValue(todoListState);
 
-  return (
-    todoListStateValue.length > 0 && (
-      <div className="my-5 p-4 bg-gray-100">
-        <p className="text-xl pl-1 mb-4">Filter items by :</p>
-        <Labels selectedLabels={filterStateValue} onUpdate={setFilterState} />
-      </div>
-    )
-  );
+  return todoListStateValue.length > 0 ? (
+    <div className="my-5 p-4 bg-gray-100">
+      <p className="text-xl pl-1 mb-4">Filter items by :</p>
+      <Labels selectedLabels={filterStateValue} onUpdate={setFilterState} />
+    </div>
+  ) : null;
 }
