@@ -1,13 +1,12 @@
-import { useState } from "react";
 import classNames from "classnames";
 
-import { getLabelsAsObject, getSelectedLabelsName } from "../../utils/helpers";
-import { ILabel } from "../../utils/interfaces";
+import { useRecoilValue } from "recoil";
+import { labelListState } from "../../state/labelListState";
 
 interface IProps {
   multiselect?: boolean;
-  selectedLabels: ILabel[];
-  onUpdate: (selectedLabels: ILabel[]) => void;
+  selectedLabels: string[];
+  onUpdate: (selectedLabels: string[]) => void;
 }
 
 export default function Labels({
@@ -15,40 +14,36 @@ export default function Labels({
   selectedLabels,
   onUpdate,
 }: IProps) {
-  const [labelList, setLabelList] = useState(getLabelsAsObject());
-  const selectedLabelsName = getSelectedLabelsName(selectedLabels);
+  const labelListStateValue = useRecoilValue(labelListState);
 
   const toggleLabel = (name: string) => {
-    const newLabelList = labelList.map((label) => {
-      if (label.name === name) {
-        return {
-          ...label,
-          selected: !label.selected,
-        };
-      }
-
-      return {
-        ...label,
-        selected: multiselect ? label.selected : false,
-      };
-    });
-
-    setLabelList(newLabelList);
-    onUpdate(newLabelList);
+    if (multiselect) {
+      onUpdate(
+        selectedLabels.includes(name)
+          ? selectedLabels.filter((labelName) => labelName !== name)
+          : [...selectedLabels, name]
+      );
+    } else {
+      onUpdate(selectedLabels.includes(name) ? [] : [name]);
+    }
   };
 
   return (
     <div className="flex gap-2">
-      {labelList.map((label) => (
+      {labelListStateValue.map((label) => (
         <span
           key={label.name}
           className={classNames(
-            "p-1 text-sm rounded-md cursor-pointer hover:border-black border-2 border-transparent",
+            "p-1 text-sm rounded-md cursor-pointer border-2 border-transparent",
             {
-              [label.color]:
-                selectedLabelsName.includes(label.name) && label.selected,
-              "bg-white":
-                selectedLabelsName.includes(label.name) ?? label.selected,
+              [`bg-${label.color}-100`]: selectedLabels.includes(label.name),
+              [`border-${label.color}-300`]: selectedLabels.includes(
+                label.name
+              ),
+              [`hover:border-${label.color}-300`]: !selectedLabels.includes(
+                label.name
+              ),
+              "bg-white": !selectedLabels.includes(label.name),
             }
           )}
           onClick={() => toggleLabel(label.name)}

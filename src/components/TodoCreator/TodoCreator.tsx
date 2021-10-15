@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { todoListState } from "../../state/todoListState";
-import { itemsCounter, getDefaultNoLabel } from "../../utils/helpers";
-import { ILabel } from "../../utils/interfaces";
+import { itemsCounter } from "../../utils/helpers";
 import Labels from "../Labels";
 
 export default function TodoCreator() {
   const setTodoListState = useSetRecoilState(todoListState);
 
   const [text, setText] = useState("");
-  const [labelSelected, setLabelSelected] = useState<ILabel>(
-    getDefaultNoLabel()
-  );
+  const [labelSelected, setLabelSelected] = useState<string>("");
 
   const submitHandler = () => {
     if (text === "") {
@@ -27,23 +24,24 @@ export default function TodoCreator() {
       ...old,
     ]);
 
-    setLabelSelected(getDefaultNoLabel());
+    setLabelSelected("");
     setText("");
   };
 
-  const onSelectLabel = (selected: ILabel[]) => {
-    const label = selected.filter((label) => label.selected)[0];
+  const onSelectLabel = (selected: string[]) => {
+    const label = selected[0];
+
     if (label) {
       setLabelSelected(label);
     } else {
-      setLabelSelected(getDefaultNoLabel());
+      setLabelSelected("");
     }
   };
 
   return (
     <div className="p-4 bg-gray-100">
       <input
-        type="text"
+        type="textarea"
         value={text}
         onChange={(e) => setText(e.target.value)}
         className="w-full border border-gray-300 p-4 text-xl outline-none"
@@ -52,7 +50,7 @@ export default function TodoCreator() {
       <div className="flex justify-between gap-3 items-center mt-5">
         <Labels
           multiselect={false}
-          selectedLabels={[labelSelected]}
+          selectedLabels={labelSelected ? [labelSelected] : []}
           onUpdate={onSelectLabel}
         />
         <button

@@ -1,29 +1,36 @@
-import React from "react";
 import { useRecoilValue } from "recoil";
-import { filterState } from "../../state/filterState";
-import { todoListState } from "../../state/todoListState";
-import { getSelectedLabelsName } from "../../utils/helpers";
+import {
+  todoListState,
+  todoListStateFiltered,
+} from "../../state/todoListState";
 import TodoItem from "../TodoItem";
 
 export default function TodoList() {
-  const filterStateValue = useRecoilValue(filterState);
+  const todoListStateFilteredValue = useRecoilValue(todoListStateFiltered);
   const todoListStateValue = useRecoilValue(todoListState);
-
-  const selectedLabelsName = getSelectedLabelsName(filterStateValue);
 
   return (
     <div className="flex flex-col gap-5 mt-20">
-      {todoListStateValue.reduce((todoItems: any[], todoItem) => {
-        if (
-          !selectedLabelsName.length ||
-          (selectedLabelsName.length &&
-            selectedLabelsName.includes(todoItem.label?.name || ""))
-        ) {
-          todoItems.push(<TodoItem key={todoItem.key} item={todoItem} />);
-        }
+      {todoListStateValue.length > 0 && (
+        <p className="text-right text-sm mb-5">
+          {`Displaying ${todoListStateFilteredValue.length} of ${todoListStateValue.length}`}
+        </p>
+      )}
 
-        return todoItems;
-      }, [])}
+      {todoListStateFilteredValue.map((todoItem) => (
+        <TodoItem key={todoItem.key} item={todoItem} />
+      ))}
+
+      {todoListStateFilteredValue.length === 0 && (
+        <>
+          <p className="text-center text-4xl text-gray-600">No todo found :/</p>
+          <p className="text-center text-lg text-gray-400">
+            {todoListStateValue.length
+              ? `Change the filter applied to display other todos`
+              : "Create your first todo"}
+          </p>
+        </>
+      )}
     </div>
   );
 }

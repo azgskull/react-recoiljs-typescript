@@ -7,5 +7,5 @@ export interface ILabel {
 export interface ITodoItem {
   key: number;
   text: string;
-  label: ILabel;
+  label: string;
 }
