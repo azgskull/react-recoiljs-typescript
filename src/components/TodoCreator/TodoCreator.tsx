@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { todoListState } from "../../state/todoListState";
-import { itemsCounter } from "../../utils/helpers";
 import Labels from "../Labels";
 
 export default function TodoCreator() {
@@ -17,9 +16,10 @@ export default function TodoCreator() {
 
     setTodoListState((old) => [
       {
-        key: itemsCounter.count++,
+        key: Date.now(),
         text,
         label: labelSelected,
+        isCompleted: false,
       },
       ...old,
     ]);

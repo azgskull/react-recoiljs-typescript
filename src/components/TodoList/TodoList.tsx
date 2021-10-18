@@ -17,8 +17,8 @@ export default function TodoList() {
         </p>
       )}
 
-      {todoListStateFilteredValue.map((todoItem) => (
-        <TodoItem key={todoItem.key} item={todoItem} />
+      {todoListStateFilteredValue.map((todoItem, index) => (
+        <TodoItem key={todoItem.key} index={index} />
       ))}
 
       {todoListStateFilteredValue.length === 0 && (

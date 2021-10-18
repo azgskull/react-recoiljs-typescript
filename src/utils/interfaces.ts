@@ -8,4 +8,5 @@ export interface ITodoItem {
   key: number;
   text: string;
   label: string;
+  isCompleted: boolean;
 }
